@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 public class Application {
 	private static Application instance;
 	
-	Bridge bridge;
 	TreeView treeView;
 	InfoView infoView;
 	

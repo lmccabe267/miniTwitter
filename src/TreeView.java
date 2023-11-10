@@ -8,6 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class TreeView extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private UserGroup root;
 	private JTree tree;
 	private DefaultTreeModel treeModel;
@@ -16,7 +17,7 @@ public class TreeView extends JPanel {
 	public TreeView(InfoView infoView) {
 		
 		this.infoView = infoView;
-		
+		this.infoView.acceptTree(this);
 		this.root = createGroupHierarchy();
 		treeModel = new DefaultTreeModel(createTreeNode(root));
 		this.tree = new JTree(treeModel);
@@ -26,9 +27,18 @@ public class TreeView extends JPanel {
             public void valueChanged(TreeSelectionEvent e) {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-                if (selectedNode != null && selectedNode.getUserObject() instanceof User) {
-                    User selectedUser = (User) selectedNode.getUserObject();
-                    handleUserSelection(selectedUser);
+                if (selectedNode != null) {
+                    Object selectedObject = selectedNode.getUserObject();
+
+                    if (selectedObject != null) {
+                        if (selectedObject instanceof User) {
+                            User selectedUser = (User) selectedObject;
+                            handleUserSelection(selectedUser);
+                        } else {
+                            UserGroup selectedGroup = (UserGroup) selectedObject;
+                            handleGroupSelection(selectedGroup);
+                        }
+                    }
                 }
             }
         });
@@ -44,9 +54,9 @@ public class TreeView extends JPanel {
 	
 	private static UserGroup createGroupHierarchy() {
         // Create a sample hierarchy
-        User user1 = new User("1", "Alice", "Smith");
-        User user2 = new User("2", "Bob", "Jones");
-        User user3 = new User("3", "Charlie", "Brown");
+        User user1 = new User("Alice");
+        User user2 = new User("Bob");
+        User user3 = new User("Charlie");
 
         UserGroup rootGroup = new UserGroup("Root Group");
         UserGroup group1 = new UserGroup("Group 1");
@@ -70,7 +80,7 @@ public class TreeView extends JPanel {
     }
 	
 	private DefaultMutableTreeNode createTreeNode(UserGroup group) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(group.getId());
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(group);
 
         for (User user : group.getUsers()) {
             node.add(new DefaultMutableTreeNode(user));
@@ -86,6 +96,9 @@ public class TreeView extends JPanel {
 	private void reloadTree(UserGroup rootGroup) {
 	    treeModel.setRoot(createTreeNode(rootGroup));
 	    treeModel.reload();
+	    for(int i = 0; i < tree.getRowCount(); i++) {
+	    	tree.expandRow(i);
+	    }
 	}
 	
 	private void handleUserSelection(User user) {
@@ -93,4 +106,15 @@ public class TreeView extends JPanel {
         infoView.updatePanel(user);
         // Add your custom logic here
     }
+	
+	private void handleGroupSelection(UserGroup userGroup) {
+        // Perform actions based on the selected user
+        infoView.updatePanel(userGroup);
+        // Add your custom logic here
+    }
+	
+	public void addUser(UserGroup parentGroup, String userId) {
+		parentGroup.addUser(new User(userId));
+		reloadTree(root);
+	}
 }

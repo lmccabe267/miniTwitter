@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class UserGroup {
+public class UserGroup {
     private String id;
     private List<User> users = new ArrayList<>();
     private List<UserGroup> subgroups = new ArrayList<>();
@@ -34,6 +34,6 @@ class UserGroup {
 
     @Override
     public String toString() {
-        return "Group: " + id;
+        return id;
     }
 }

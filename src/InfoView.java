@@ -1,4 +1,6 @@
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -8,17 +10,33 @@ public class InfoView extends JPanel{
 	JPanel userInfo, userView, userStats;
 	JTextArea userId, groupId;
 	JButton addUser, addGroup, openUserView, showUserTotal, showGroupTotal, showTotalMessages, showPositive;
-	User user;
+	User user = null;
+	UserGroup group = null;
+	TreeView treeView;
 	public InfoView() {
 		this.setLayout(new GridLayout(3,1));
 		userInfo = new JPanel();
 		userInfo.setLayout(new GridLayout(2,2));
 		
 		userId = new JTextArea("user id");
-		userId.setEditable(false);
 		addUser = new JButton("Add User");
+		addUser.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(group != null) {
+					if(!userId.getText().equals("")) {
+						treeView.addUser(group, userId.getText());						
+					}else {
+						System.out.println("Enter User Id");
+					}
+				}else {
+					System.out.println("Select Group");
+				}
+			}
+			
+		});
 		groupId = new JTextArea("group id");
-		groupId.setEditable(false);
 		addGroup = new JButton("Add Group");
 		
 		userInfo.add(userId);
@@ -52,10 +70,19 @@ public class InfoView extends JPanel{
 		this.add(userStats);
 	}
 	
+	public void acceptTree(TreeView treeView) {
+		this.treeView = treeView;
+	}
+	
 	public void updatePanel(User user) {
+		System.out.println("Selected User");
 		this.user = user;
-		userId.setText(user.getId());
-		groupId.setText(user.getGroupId());
-		
+		this.group = null;
+	}
+	
+	public void updatePanel(UserGroup group) {
+		System.out.println("Selected Group");
+		this.group = group;
+		this.user = null;
 	}
 }
