@@ -1,8 +1,11 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -13,25 +16,43 @@ public class InfoView extends JPanel{
 	User user = null;
 	UserGroup group = null;
 	TreeView treeView;
+	
 	public InfoView() {
 		this.setLayout(new GridLayout(3,1));
 		userInfo = new JPanel();
 		userInfo.setLayout(new GridLayout(2,2));
 		
 		userId = new JTextArea("user id");
+		userId.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(userId.getText().equals("user id")) {
+					userId.setText("");
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(userId.getText().equals("")) {
+					userId.setText("user id");
+				}
+			}
+			
+		});
 		addUser = new JButton("Add User");
 		addUser.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(group != null) {
-					if(!userId.getText().equals("")) {
+					if(!userId.getText().equals("") && !userId.getText().equals("user id")) {
 						treeView.addUser(group, userId.getText());						
 					}else {
-						System.out.println("Enter User Id");
+						showWarningPopup("Please Enter User Id");
 					}
 				}else {
-					System.out.println("Select Group");
+					showWarningPopup("Please Select a Group");
 				}
 			}
 			
@@ -85,4 +106,8 @@ public class InfoView extends JPanel{
 		this.group = group;
 		this.user = null;
 	}
+	
+	private void showWarningPopup(String message) {
+        JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
+    }
 }
