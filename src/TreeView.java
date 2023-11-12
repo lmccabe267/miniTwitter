@@ -45,11 +45,8 @@ public class TreeView extends JPanel {
 		
 		this.setLayout(new BorderLayout());
 		this.add(tree);
+		reloadTree(root);
 		this.setVisible(true);
-	}
-	
-	public void reload() {
-		
 	}
 	
 	private static UserGroup createGroupHierarchy() {
@@ -114,7 +111,20 @@ public class TreeView extends JPanel {
     }
 	
 	public void addUser(UserGroup parentGroup, String userId) {
-		parentGroup.addUser(new User(userId));
-		reloadTree(root);
+		if(userId.equals("user id")) {
+			infoView.showWarningPopup("Enter User Id");
+		}else {
+			parentGroup.addUser(new User(userId));
+			reloadTree(root);			
+		}
 	}
+	public void addGroup(UserGroup parentGroup, String groupId) {
+		if(groupId.equals("group id")) {
+			infoView.showWarningPopup("Enter Group Id");
+		}else {
+			parentGroup.addSubgroup(new UserGroup(groupId));
+			reloadTree(root);			
+		}
+	}
+	
 }

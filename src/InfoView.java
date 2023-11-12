@@ -58,7 +58,41 @@ public class InfoView extends JPanel{
 			
 		});
 		groupId = new JTextArea("group id");
+		groupId.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(groupId.getText().equals("group id")) {
+					groupId.setText("");
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(groupId.getText().equals("")) {
+					groupId.setText("group id");
+				}
+			}
+			
+		});
+		
 		addGroup = new JButton("Add Group");
+		addGroup.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(group != null) {
+					if(!groupId.getText().equals("") && !groupId.getText().equals("user id")) {
+						treeView.addGroup(group, groupId.getText());						
+					}else {
+						showWarningPopup("Please Enter Group Id");
+					}
+				}else {
+					showWarningPopup("Please Select a Group");
+				}
+			}
+			
+		});
 		
 		userInfo.add(userId);
 		userInfo.add(addUser);
@@ -107,7 +141,7 @@ public class InfoView extends JPanel{
 		this.user = null;
 	}
 	
-	private void showWarningPopup(String message) {
+	public void showWarningPopup(String message) {
         JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
     }
 }
