@@ -7,8 +7,10 @@ public class User {
     private String groupId;
     private HashSet<String> following;
     private List<String> tweets;
+    private TreeView treeView;
 
-    public User(String id) {
+    public User(String id, TreeView treeView) {
+    	this.treeView = treeView;
         this.id = id;
         this.following = new HashSet<String>();
         this.tweets = new ArrayList<String>();
@@ -18,8 +20,13 @@ public class User {
         return id;
     }
     
-    public void followUser(String userId) {
-    	following.add(userId);
+    public Boolean followUser(String userId) {
+    	if(treeView.searchUserFromRoot(userId) != null) {
+    		following.add(userId);
+    		return true;
+    	}else {
+    		return false;
+    	}
     }
     
     public List<String> getFollowing() {

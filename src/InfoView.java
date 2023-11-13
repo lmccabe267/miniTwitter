@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -16,8 +18,10 @@ public class InfoView extends JPanel{
 	User user = null;
 	UserGroup group = null;
 	TreeView treeView;
+	List<UserView> openViews;
 	
 	public InfoView() {
+		openViews = new ArrayList<UserView>();
 		this.setLayout(new GridLayout(3,1));
 		userInfo = new JPanel();
 		userInfo.setLayout(new GridLayout(2,2));
@@ -109,7 +113,7 @@ public class InfoView extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(user != null) {
-					new UserView(user, treeView);
+					openViews.add(new UserView(user, treeView));
 				}
 			}
 			
@@ -154,4 +158,10 @@ public class InfoView extends JPanel{
 	public void showWarningPopup(String message) {
         JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
     }
+	
+	public void reloadUserViews() {
+		for(UserView view: openViews) {
+			view.reloadUserView();
+		}
+	}
 }

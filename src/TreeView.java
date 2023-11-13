@@ -52,14 +52,11 @@ public class TreeView extends JPanel {
 		this.setVisible(true);
 	}
 	
-	private static UserGroup createGroupHierarchy() {
+	private UserGroup createGroupHierarchy() {
         // Create a sample hierarchy
-        User user1 = new User("Alice");
-        User user2 = new User("Bob");
-        User user3 = new User("Charlie");
-        
-        user1.followUser("Bob");
-        user1.followUser("Charlie");
+        User user1 = new User("Alice", this);
+        User user2 = new User("Bob", this);
+        User user3 = new User("Charlie", this);
         
         user2.tweetMessage("hello there");
         user3.tweetMessage("goodybye");
@@ -124,7 +121,7 @@ public class TreeView extends JPanel {
 		if(userId.equals("user id")) {
 			infoView.showWarningPopup("Enter User Id");
 		}else {
-			parentGroup.addUser(new User(userId));
+			parentGroup.addUser(new User(userId, this));
 			reloadTree(root);			
 		}
 	}
@@ -154,6 +151,23 @@ public class TreeView extends JPanel {
         return null;
     }
 	
+	public User searchUserFromRoot(String userId) {
+        for (User user : root.getUsers()) {
+            if (user.getId().equals(userId)) {
+                return user;
+            }
+        }
+
+        for (UserGroup subgroup : root.getSubgroups()) {
+            User foundUser = searchUser(subgroup, userId);
+            if (foundUser != null) {
+                return foundUser;
+            }
+        }
+
+        return null;
+    }
+	
 	public List<String> getNewsFeed(User user) {
 		List<String> following = user.getFollowing();
 		List<String> newsFeed = new ArrayList<String>();
@@ -164,6 +178,10 @@ public class TreeView extends JPanel {
 			}
 		}
 		return newsFeed;
+	}
+	
+	public void reloadUserViews() {
+		infoView.reloadUserViews();
 	}
 	
 }
