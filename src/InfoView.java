@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 public class InfoView extends JPanel{
-	JPanel userInfo, userView, userStats;
+	JPanel userInfo, userViewPanel, userStats;
 	JTextArea userId, groupId;
 	JButton addUser, addGroup, openUserView, showUserTotal, showGroupTotal, showTotalMessages, showPositive;
 	User user = null;
@@ -100,12 +100,22 @@ public class InfoView extends JPanel{
 		userInfo.add(addGroup);
 		
 		
-		userView = new JPanel();
-		userView.setLayout(new GridLayout(1,1));
+		userViewPanel = new JPanel();
+		userViewPanel.setLayout(new GridLayout(1,1));
 		
 		openUserView = new JButton("Open User View");
+		openUserView.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(user != null) {
+					new UserView(user, treeView);
+				}
+			}
+			
+		});
 		
-		userView.add(openUserView);
+		userViewPanel.add(openUserView);
 		
 		userStats = new JPanel();
 		userStats.setLayout(new GridLayout(2,2));
@@ -121,7 +131,7 @@ public class InfoView extends JPanel{
 		userStats.add(showPositive);
 		
 		this.add(userInfo);
-		this.add(userView);
+		this.add(userViewPanel);
 		this.add(userStats);
 	}
 	

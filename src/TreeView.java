@@ -1,4 +1,7 @@
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -54,7 +57,14 @@ public class TreeView extends JPanel {
         User user1 = new User("Alice");
         User user2 = new User("Bob");
         User user3 = new User("Charlie");
-
+        
+        user1.followUser("Bob");
+        user1.followUser("Charlie");
+        
+        user2.tweetMessage("hello there");
+        user3.tweetMessage("goodybye");
+        
+        
         UserGroup rootGroup = new UserGroup("Root Group");
         UserGroup group1 = new UserGroup("Group 1");
         UserGroup group2 = new UserGroup("Group 2");
@@ -125,6 +135,35 @@ public class TreeView extends JPanel {
 			parentGroup.addSubgroup(new UserGroup(groupId));
 			reloadTree(root);			
 		}
+	}
+	
+	public User searchUser(UserGroup group, String userId) {
+        for (User user : group.getUsers()) {
+            if (user.getId().equals(userId)) {
+                return user;
+            }
+        }
+
+        for (UserGroup subgroup : group.getSubgroups()) {
+            User foundUser = searchUser(subgroup, userId);
+            if (foundUser != null) {
+                return foundUser;
+            }
+        }
+
+        return null;
+    }
+	
+	public List<String> getNewsFeed(User user) {
+		List<String> following = user.getFollowing();
+		List<String> newsFeed = new ArrayList<String>();
+		for(String userId: following) {
+			User followedUser = searchUser(root, userId);
+			for(String tweet: followedUser.getTweets()) {
+				newsFeed.add("-  " + followedUser.getId() + ": " + tweet);
+			}
+		}
+		return newsFeed;
 	}
 	
 }
