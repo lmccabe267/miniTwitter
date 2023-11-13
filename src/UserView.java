@@ -104,8 +104,22 @@ public class UserView extends JFrame{
 			
 		});
 		panel3.add(tweetMessage);
-		
-		this.postTweet = new JButton("Post Tweet");
+		postTweet = new JButton("Post Tweet");
+		postTweet.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String message = tweetMessage.getText();
+				if(message.equals("Tweet Message") || message.equals("")) {
+					showWarningPopup("Please enter a message");
+				}else {
+					user.tweetMessage(message);
+					treeView.reloadUserViews();
+				}
+				
+			}
+			
+		});
 		panel3.add(postTweet);
 		
 		JLabel newsLabel = new JLabel("News Feed");
@@ -130,11 +144,13 @@ public class UserView extends JFrame{
     }
 	
 	public void reloadUserView() {
+		userId.setText("user id");
 		panel2.remove(followScroll);
 		following = new JList(user.getFollowing().toArray(new String[0]));
 		followScroll = new JScrollPane(following);
 		panel2.add(followScroll);
 		
+		tweetMessage.setText("Tweet Message");
 		panel4.remove(newsScroll);
 		newsFeed = new JList(treeView.getNewsFeed(user).toArray(new String[0]));
 		newsScroll = new JScrollPane(newsFeed);

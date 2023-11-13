@@ -144,13 +144,11 @@ public class InfoView extends JPanel{
 	}
 	
 	public void updatePanel(User user) {
-		System.out.println("Selected User");
 		this.user = user;
 		this.group = null;
 	}
 	
 	public void updatePanel(UserGroup group) {
-		System.out.println("Selected Group");
 		this.group = group;
 		this.user = null;
 	}
