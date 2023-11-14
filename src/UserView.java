@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,6 +29,15 @@ public class UserView extends JFrame{
 	
 	public UserView(User user, TreeView treeView) {
 		this.treeView = treeView;
+		this.setTitle(user.getId());
+		
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		UserView ref = this;
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		        treeView.removeUserView(ref);
+		    }
+		});
 		
 		panel1 = new JPanel();
 		panel1.setLayout(new GridLayout(1, 2));
@@ -114,6 +125,7 @@ public class UserView extends JFrame{
 					showWarningPopup("Please enter a message");
 				}else {
 					user.tweetMessage(message);
+					treeView.addTweet(message);
 					treeView.reloadUserViews();
 				}
 				
@@ -144,6 +156,7 @@ public class UserView extends JFrame{
     }
 	
 	public void reloadUserView() {
+		System.out.println("Reload");
 		userId.setText("user id");
 		panel2.remove(followScroll);
 		following = new JList(user.getFollowing().toArray(new String[0]));

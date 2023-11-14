@@ -16,6 +16,7 @@ public class Application {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new GridLayout(1, 2));
+		frame.setTitle("Mini Twitter");
 		
 		infoView = new InfoView();
 		treeView = new TreeView(infoView);

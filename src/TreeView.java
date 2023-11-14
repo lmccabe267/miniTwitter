@@ -16,12 +16,12 @@ public class TreeView extends JPanel {
 	private JTree tree;
 	private DefaultTreeModel treeModel;
 	private InfoView infoView;
-	
+	private int userCount, groupCount, messagesCount, positiveMessages;
 	public TreeView(InfoView infoView) {
-		
+		userCount = groupCount = messagesCount = positiveMessages = 0;
 		this.infoView = infoView;
 		this.infoView.acceptTree(this);
-		this.root = createGroupHierarchy();
+		this.root = new UserGroup("Root");
 		treeModel = new DefaultTreeModel(createTreeNode(root));
 		this.tree = new JTree(treeModel);
 		
@@ -51,37 +51,6 @@ public class TreeView extends JPanel {
 		reloadTree(root);
 		this.setVisible(true);
 	}
-	
-	private UserGroup createGroupHierarchy() {
-        // Create a sample hierarchy
-        User user1 = new User("Alice", this);
-        User user2 = new User("Bob", this);
-        User user3 = new User("Charlie", this);
-        
-        user2.tweetMessage("hello there");
-        user3.tweetMessage("goodybye");
-        
-        
-        UserGroup rootGroup = new UserGroup("Root Group");
-        UserGroup group1 = new UserGroup("Group 1");
-        UserGroup group2 = new UserGroup("Group 2");
-        UserGroup subgroup1 = new UserGroup("Subgroup 1");
-        UserGroup subgroup2 = new UserGroup("Subgroup 2");
-
-        group1.addUser(user1);
-        group1.addUser(user2);
-
-        subgroup1.addUser(user3);
-        group2.addSubgroup(subgroup1);
-
-        subgroup2.addSubgroup(new UserGroup("Subgroup 2.1")); // Creating a subgroup within subgroup 2
-        group2.addSubgroup(subgroup2);
-
-        rootGroup.addSubgroup(group1);
-        rootGroup.addSubgroup(group2);
-
-        return rootGroup;
-    }
 	
 	private DefaultMutableTreeNode createTreeNode(UserGroup group) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(group);
@@ -122,6 +91,7 @@ public class TreeView extends JPanel {
 			infoView.showWarningPopup("Enter User Id");
 		}else {
 			parentGroup.addUser(new User(userId, this));
+			++userCount;
 			reloadTree(root);			
 		}
 	}
@@ -129,6 +99,7 @@ public class TreeView extends JPanel {
 		if(groupId.equals("group id")) {
 			infoView.showWarningPopup("Enter Group Id");
 		}else {
+			++groupCount;
 			parentGroup.addSubgroup(new UserGroup(groupId));
 			reloadTree(root);			
 		}
@@ -182,6 +153,33 @@ public class TreeView extends JPanel {
 	
 	public void reloadUserViews() {
 		infoView.reloadUserViews();
+	}
+	
+	public int getUserCount() {
+		return userCount;
+	}
+	
+	public int getGroupCount() {
+		return groupCount;
+	}
+	
+	public void addTweet(String message) {
+		if(message.contains("good") || message.contains("great") || message.contains("excellent")) {
+			++positiveMessages;
+		}
+		++messagesCount;
+	}
+	
+	public int getMessagesCount() {
+		return messagesCount;
+	}
+	
+	public int getPositiveMessages() {
+		return positiveMessages;
+	}
+	
+	public void removeUserView(UserView userView) {
+		infoView.removeUserView(userView);
 	}
 	
 }

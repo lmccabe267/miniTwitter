@@ -51,7 +51,8 @@ public class InfoView extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if(group != null) {
 					if(!userId.getText().equals("") && !userId.getText().equals("user id")) {
-						treeView.addUser(group, userId.getText());						
+						treeView.addUser(group, userId.getText());		
+						userId.setText("user id");
 					}else {
 						showWarningPopup("Please Enter User Id");
 					}
@@ -87,7 +88,8 @@ public class InfoView extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if(group != null) {
 					if(!groupId.getText().equals("") && !groupId.getText().equals("user id")) {
-						treeView.addGroup(group, groupId.getText());						
+						treeView.addGroup(group, groupId.getText());	
+						groupId.setText("group id");
 					}else {
 						showWarningPopup("Please Enter Group Id");
 					}
@@ -125,10 +127,54 @@ public class InfoView extends JPanel{
 		userStats.setLayout(new GridLayout(2,2));
 		
 		showUserTotal = new JButton("Show User Total");
-		showGroupTotal = new JButton("Show Group Total");
-		showTotalMessages = new JButton("Show Messages Total");
-		showPositive = new JButton("Show Positive Percentage");
+		showUserTotal.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showInfoPopup("Total Users: " + treeView.getUserCount());
+			}
+			
+		});
 		
+		showGroupTotal = new JButton("Show Group Total");
+		showGroupTotal.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showInfoPopup("Total Groups (not including root): " + treeView.getGroupCount());
+			}
+			
+		});
+		
+		showTotalMessages = new JButton("Show Messages Total");
+		showTotalMessages.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showInfoPopup("Total Tweeted Messages: " + treeView.getMessagesCount());
+			}
+			
+		});
+		
+		showPositive = new JButton("Show Positive Percentage");
+		showPositive.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				double total = treeView.getMessagesCount();
+				double positive = treeView.getPositiveMessages();
+				
+				double ratio = positive/total;
+				double percentage = ratio * 100;
+				String formatPercentage = String.format("%.2f%%", percentage);
+				
+				if(total == 0) formatPercentage = "0%";
+				
+				showInfoPopup("Percentage of positive messages: " + formatPercentage);
+				
+			}
+			
+		});
 		userStats.add(showUserTotal);
 		userStats.add(showGroupTotal);
 		userStats.add(showTotalMessages);
@@ -157,9 +203,17 @@ public class InfoView extends JPanel{
         JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
     }
 	
+	public void showInfoPopup(String message) {
+		JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.PLAIN_MESSAGE);
+	}
+	
 	public void reloadUserViews() {
 		for(UserView view: openViews) {
 			view.reloadUserView();
 		}
+	}
+	
+	public void removeUserView(UserView userView) {
+		openViews.remove(userView);
 	}
 }
