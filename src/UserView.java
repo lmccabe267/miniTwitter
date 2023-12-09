@@ -23,9 +23,10 @@ public class UserView extends JFrame{
 	private JTextArea userId, tweetMessage;
 	private JButton followUser, postTweet;
 	private JList following, newsFeed;
+	JLabel updatedLabel;
 	private TreeView treeView;
 	JScrollPane followScroll, newsScroll;
-	JPanel panel1, panel2, panel3, panel4;
+	JPanel panel1, panel2, panel3, panel4, panel5;
 	
 	public UserView(User user, TreeView treeView) {
 		this.treeView = treeView;
@@ -47,9 +48,11 @@ public class UserView extends JFrame{
 		panel3.setLayout(new GridLayout(1, 2));
 		panel4 = new JPanel();
 		panel4.setLayout(new BorderLayout());
+		panel5 = new JPanel();
+		panel5.setLayout(new BorderLayout());
 		
 		
-		this.setLayout(new GridLayout(4, 1));
+		this.setLayout(new GridLayout(5, 1));
 		this.user = user;
 		userId = new JTextArea("user id");
 		userId.addFocusListener(new FocusListener() {
@@ -98,7 +101,6 @@ public class UserView extends JFrame{
 		
 		tweetMessage = new JTextArea("Tweet Message");
 		tweetMessage.addFocusListener(new FocusListener() {
-
 			@Override
 			public void focusGained(FocusEvent e) {
 				if(tweetMessage.getText().equals("Tweet Message")) {
@@ -126,6 +128,7 @@ public class UserView extends JFrame{
 				}else {
 					user.tweetMessage(message);
 					treeView.addTweet(message);
+					user.updateTimestamp();
 					treeView.reloadUserViews();
 				}
 				
@@ -140,6 +143,11 @@ public class UserView extends JFrame{
 		newsScroll = new JScrollPane(newsFeed);
 		panel4.add(newsScroll, BorderLayout.CENTER);
 		
+		JLabel createdLabel = new JLabel("Time Created: " + user.getCreatedTime());
+		updatedLabel = new JLabel("Time Updated: " + user.getTimestamp());
+		panel5.add(createdLabel, BorderLayout.NORTH);
+		panel5.add(updatedLabel, BorderLayout.SOUTH);
+		
 		this.setSize(new Dimension(500,500));
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
@@ -148,6 +156,7 @@ public class UserView extends JFrame{
 		this.add(panel2);
 		this.add(panel3);
 		this.add(panel4);
+		this.add(panel5);
 		this.setVisible(true);
 	}
 	
@@ -169,6 +178,9 @@ public class UserView extends JFrame{
 		newsScroll = new JScrollPane(newsFeed);
 		panel4.add(newsScroll);
 		
+		panel5.remove(updatedLabel);
+		updatedLabel = new JLabel("Time Updated: " + user.getTimestamp());
+		panel5.add(updatedLabel, BorderLayout.SOUTH);
 		this.setVisible(false);
 		this.setVisible(true);
 	}

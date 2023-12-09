@@ -1,6 +1,6 @@
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class TreeView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private UserGroup root;
+	private User lastUpdated;
 	private JTree tree;
 	private DefaultTreeModel treeModel;
 	private InfoView infoView;
@@ -163,11 +164,46 @@ public class TreeView extends JPanel {
 		return groupCount;
 	}
 	
+	public List<User> getAllUsers() {
+        List<User> allUsers = new ArrayList<>();
+        getUsersInGroup(root, allUsers);
+        return allUsers;
+    }
+
+    private void getUsersInGroup(UserGroup group, List<User> allUsers) {
+        allUsers.addAll(group.getUsers());
+        for (UserGroup subgroup : group.getSubgroups()) {
+        	getUsersInGroup(subgroup, allUsers);
+        }
+    }
+	
 	public void addTweet(String message) {
 		if(message.contains("good") || message.contains("great") || message.contains("excellent")) {
 			++positiveMessages;
 		}
 		++messagesCount;
+	}
+	
+	public boolean validateUsers() {
+		HashSet<String> usernames = new HashSet<String>();
+		
+		List<User> users = getAllUsers();
+		
+		for(User user: users) {
+			if(!usernames.add(user.getId())) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public void setLastUpdated(User user) {
+		this.lastUpdated = user;
+	}
+	
+	public User getLastUpdated() {
+		return this.lastUpdated;
 	}
 	
 	public int getMessagesCount() {

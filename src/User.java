@@ -8,16 +8,40 @@ public class User {
     private HashSet<String> following;
     private List<String> tweets;
     private TreeView treeView;
+    private long createdTime;
+    private long timestamp;
 
     public User(String id, TreeView treeView) {
     	this.treeView = treeView;
         this.id = id;
         this.following = new HashSet<String>();
         this.tweets = new ArrayList<String>();
+        this.createdTime = System.currentTimeMillis();
+        this.timestamp = -1;
     }
 
+    public String getCreatedTime() {
+    	return this.createdTime + "";
+    }
+    
     public String getId() {
         return id;
+    }
+    
+    public String getTimestamp() {
+    	return this.timestamp + "";
+    }
+    
+    public void updateTimestamp() {
+    	timestamp = System.currentTimeMillis();
+    	treeView.setLastUpdated(this);
+    	for(String id: following) {
+    		treeView.searchUserFromRoot(id).setTimestamp(this.timestamp);
+    	}
+    }
+    
+    public void setTimestamp(long timestamp) {
+    	this.timestamp = timestamp;
     }
     
     public Boolean followUser(String userId) {

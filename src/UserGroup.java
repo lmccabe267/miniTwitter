@@ -4,11 +4,13 @@ import java.util.List;
 
 public class UserGroup {
     private String id;
+    private long createdTime;
     private List<User> users = new ArrayList<>();
     private List<UserGroup> subgroups = new ArrayList<>();
 
     public UserGroup(String id) {
         this.id = id;
+        this.createdTime = System.currentTimeMillis();
     }
 
     public void addUser(User user) {

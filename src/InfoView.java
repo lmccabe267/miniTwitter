@@ -14,7 +14,7 @@ import javax.swing.JTextArea;
 public class InfoView extends JPanel{
 	JPanel userInfo, userViewPanel, userStats;
 	JTextArea userId, groupId;
-	JButton addUser, addGroup, openUserView, showUserTotal, showGroupTotal, showTotalMessages, showPositive;
+	JButton addUser, addGroup, openUserView, showUserTotal, showGroupTotal, showTotalMessages, showPositive, verifyUsers, lastUpdated;
 	User user = null;
 	UserGroup group = null;
 	TreeView treeView;
@@ -107,7 +107,7 @@ public class InfoView extends JPanel{
 		
 		
 		userViewPanel = new JPanel();
-		userViewPanel.setLayout(new GridLayout(1,1));
+		userViewPanel.setLayout(new GridLayout(1,3));
 		
 		openUserView = new JButton("Open User View");
 		openUserView.addActionListener(new ActionListener() {
@@ -121,8 +121,38 @@ public class InfoView extends JPanel{
 			
 		});
 		
-		userViewPanel.add(openUserView);
+		verifyUsers = new JButton("Validate Users");
+		verifyUsers.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(treeView.validateUsers()) {
+					showInfoPopup("The validation was successful");
+				}else {
+					showInfoPopup("The validation failed");
+				}
+			}
+			
+		});
 		
+		lastUpdated = new JButton("Get Last Updated");
+		lastUpdated.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					showInfoPopup("The last updated userid is " + treeView.getLastUpdated().getId() + " at the time: " + treeView.getLastUpdated().getTimestamp());
+				}catch(Exception error) {
+					
+				}
+				
+			}
+			
+		});
+		
+		userViewPanel.add(openUserView);
+		userViewPanel.add(verifyUsers);
+		userViewPanel.add(lastUpdated);
 		userStats = new JPanel();
 		userStats.setLayout(new GridLayout(2,2));
 		
